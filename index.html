@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wushnag Clan Custom Tournament</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ff88;
+      text-shadow: 0 0 10px #00ff88;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+      background-color: #111;
+      box-shadow: 0 0 20px #00ff8855;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #00ff88;
+      color: black;
+    }
+    tr:nth-child(even) {
+      background-color: #222;
+    }
+    input, select {
+      padding: 5px;
+      border-radius: 5px;
+      border: none;
+      margin: 5px;
+      width: 80px;
+      text-align: center;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #00ff88;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      color: black;
+    }
+    button:hover {
+      background-color: #00cc6a;
+    }
+    #winnerBox {
+      background-color: #111;
+      border: 2px solid #ffcc00;
+      border-radius: 10px;
+      display: inline-block;
+      padding: 15px 25px;
+      margin-top: 20px;
+      box-shadow: 0 0 15px #ffcc00aa;
+    }
+    #winnerName {
+      color: #ffcc00;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔥 Wushnag Clan Custom Tournament 🔥</h1>
+  <h3>Free Fire Max - Clash Squad Edition</h3>
+  <p>NRR based on match round scores (example: 8–6)</p>
+  <p>Players: shit, tushar, ved, drugs, chutiya, raghav</p>
+
+  <table id="playerTable">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Matches</th>
+        <th>Rounds Won</th>
+        <th>Rounds Lost</th>
+        <th>NRR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>shit</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr>
+      <tr><td>tushar</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr>
+      <tr><td>ved</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr>
+      <tr><td>drugs</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr>
+      <tr><td>chutiya</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr>
+      <tr><td>raghav</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr>
+    </tbody>
+  </table>
+
+  <h2>🎯 Enter Match Result</h2>
+  <label>Player:</label>
+  <select id="playerSelect">
+    <option value="shit">shit</option>
+    <option value="tushar">tushar</option>
+    <option value="ved">ved</option>
+    <option value="drugs">drugs</option>
+    <option value="chutiya">chutiya</option>
+    <option value="raghav">raghav</option>
+  </select>
+  <label>Rounds Won:</label><input type="number" id="won" min="0" max="15">
+  <label>Rounds Lost:</label><input type="number" id="lost" min="0" max="15">
+  <button onclick="addResult()">Add Result</button>
+
+  <h3 id="status"></h3>
+
+  <div id="winnerBox">
+    <h2>🏆 Current Leader 🏆</h2>
+    <div id="winnerName">No matches yet</div>
+  </div>
+
+  <script>
+    let players = {
+      shit: { matches: 0, won: 0, lost: 0, nrr: 0 },
+      tushar: { matches: 0, won: 0, lost: 0, nrr: 0 },
+      ved: { matches: 0, won: 0, lost: 0, nrr: 0 },
+      drugs: { matches: 0, won: 0, lost: 0, nrr: 0 },
+      chutiya: { matches: 0, won: 0, lost: 0, nrr: 0 },
+      raghav: { matches: 0, won: 0, lost: 0, nrr: 0 }
+    };
+
+    function addResult() {
+      let name = document.getElementById("playerSelect").value;
+      let won = parseInt(document.getElementById("won").value) || 0;
+      let lost = parseInt(document.getElementById("lost").value) || 0;
+
+      if (won + lost > 15 || won === lost) {
+        document.getElementById("status").innerText = "⚠️ Invalid score! Must be a valid round score (example: 8–6)";
+        return;
+      }
+
+      let p = players[name];
+      p.matches++;
+      p.won += won;
+      p.lost += lost;
+
+      p.nrr = ((p.won - p.lost) / p.matches).toFixed(2);
+
+      document.getElementById("status").innerText = `✅ ${name}'s match recorded: ${won}-${lost}`;
+      updateTable();
+      updateWinner();
+
+      // Reset input fields
+      document.getElementById("won").value = "";
+      document.getElementById("lost").value = "";
+    }
+
+    function updateTable() {
+      let rows = document.querySelectorAll("#playerTable tbody tr");
+      rows.forEach(row => {
+        let name = row.cells[0].innerText;
+        let p = players[name];
+        row.cells[1].innerText = p.matches;
+        row.cells[2].innerText = p.won;
+        row.cells[3].innerText = p.lost;
+        row.cells[4].innerText = p.nrr;
+      });
+    }
+
+    function updateWinner() {
+      let bestPlayer = null;
+      let bestNRR = -Infinity;
+
+      for (let name in players) {
+        let p = players[name];
+        if (p.matches > 0 && parseFloat(p.nrr) > bestNRR) {
+          bestNRR = parseFloat(p.nrr);
+          bestPlayer = name;
+        }
+      }
+
+      let winnerName = document.getElementById("winnerName");
+      if (bestPlayer && bestNRR >= 6) {
+        winnerName.innerText = `🏅 WINNER: ${bestPlayer.toUpperCase()} 🏅 (NRR: ${bestNRR.toFixed(2)})`;
+      } else if (bestPlayer) {
+        winnerName.innerText = `${bestPlayer.toUpperCase()} (NRR: ${bestNRR.toFixed(2)})`;
+      } else {
+        winnerName.innerText = "No matches yet";
+      }
+    }
+  </script>
+
+</body>
+</html>
